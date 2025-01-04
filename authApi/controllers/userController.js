@@ -102,9 +102,23 @@ const loginUser = async(req,res) => {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-        const token = jwt.sign({userId: users.id}, process.env.SECRET_KEY, {expiresIn:"1h"} )
+        const token = jwt.sign({userId: users.id, userName:users.username}, process.env.SECRET_KEY, {expiresIn:"1h"} )
 
         return res.status(200).json({token})
+
+    } catch (error) {
+        console.log("error:",error);
+        return res.status(500).json({message:"UnExpected Error"})
+    }
+
+
+}
+
+
+const verifyToken = async(req,res) => {
+    try {
+        const {userId, userName} = req.user
+        return res.status(200).json({userId, userName})
 
     } catch (error) {
         console.log("error:",error);
@@ -120,5 +134,6 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    verifyToken
 };
