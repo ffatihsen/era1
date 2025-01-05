@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PrimarySearchAppBar from '../components/Navbar';
+import { postSignup } from '../Services';
+import Toastbox from '../components/Toastbox';
 
 export default function Signup() {
   const [username, setUsername] = useState('');
@@ -24,19 +26,37 @@ export default function Signup() {
 
     
     if (password !== confirmPassword) {
-      setError('Şifreler uyuşmuyor!');
+      setError('Passwords do not match!');
       return;
     }
 
     // Fake backend request simulation (Replace with actual API call)
     if (username && email.includes('@') && password.length >= 6) {
       
-      console.log('User registered:', { username, email });
-      navigate('/signin'); 
+      try {
+        let res = await postSignup({username, email, password})
+        if(res.status == 201){
+          Toastbox("success", "Success!")
+          navigate('/signin'); 
+      }
+        
+      } catch (error) {
+        if(error.response.data?.message){
+          Toastbox("error", error.response.data.message)
+        }
+        else{
+          Toastbox("error", "An unexpected error occurred!")
+        }
+      }
+      
+      
     } else {
-      setError('Lütfen tüm alanları doğru şekilde doldurun.');
+      setError('Please fill in all fields correctly.');
     }
   };
+
+
+
 
   return (
 

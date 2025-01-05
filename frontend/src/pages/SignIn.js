@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PrimarySearchAppBar from '../components/Navbar';
+import { postSignin } from '../Services';
+import Toastbox from '../components/Toastbox';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
@@ -20,12 +22,31 @@ export default function Signin() {
     e.preventDefault();
     setError('');
 
-    // Fake backend request simulation (Replace with actual API call)
-    if (email === 'test@example.com' && password === '123456') {
-      localStorage.setItem('token', 'fakeToken'); //
-      navigate('/'); 
+   
+    if (email.includes('@') && password.length >= 6) {
+      
+
+      try {
+
+        let res = await postSignin({email,password })
+        if(res.status == 200){
+          localStorage.setItem('token', res.data.token);
+          Toastbox("success", "Success!")
+          navigate('/feed'); 
+        }
+        
+      } catch (error) {
+        if(error.response.data?.error){
+          Toastbox("error", error.response.data.error)
+        }
+        else{
+          Toastbox("error", "An unexpected error occurred!")
+        }
+      }
+
+
     } else {
-      setError('Geçersiz e-posta adresi veya şifre.');
+      setError('Invalid email address or password.');
     }
   };
 
@@ -98,7 +119,7 @@ export default function Signin() {
               ':hover': { backgroundColor: 'primary.dark' },
             }}
           >
-            Giriş Yap
+           Login
           </Button>
           <Box display="flex" justifyContent="space-between" sx={{ mt: 2 }}>
             <Link
@@ -107,7 +128,7 @@ export default function Signin() {
               color="text.secondary"
               onClick={() => navigate('/forgot-password')}
             >
-              Şifreni mi unuttun?
+              Forgot your password?
             </Link>
             <Link
               href="#"
@@ -115,7 +136,7 @@ export default function Signin() {
               color="text.secondary"
               onClick={() => navigate('/signup')}
             >
-              Hesabın yok mu? Üye ol
+              Don't have an account? Sign up
             </Link>
           </Box>
         </Box>

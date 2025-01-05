@@ -61,6 +61,11 @@ export default function PrimarySearchAppBar() {
   const navigate = useNavigate();
 
 
+  React.useEffect(() => {
+    setToken(localStorage.getItem('token'))
+  },[])
+
+
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
