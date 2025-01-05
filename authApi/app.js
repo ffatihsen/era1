@@ -6,6 +6,7 @@ const routes = require("./routes")
 
 const sequelize = require("./config/databaseconfig")
 const {User} = require("./models/user")
+const { errorHandler } = require('./middleware/errorHandler');
 
 
 const app = express()
@@ -16,6 +17,16 @@ app.use(express.urlencoded({limit:"2mb", extended:true}))
 const PORT = process.env.PORT || 8080
 
 app.use("/", routes);
+
+
+app.use((req, res, next) => {
+    res.status(404).json({ error: "Route not found." });
+});
+
+
+
+app.use(errorHandler);
+
 
 
 

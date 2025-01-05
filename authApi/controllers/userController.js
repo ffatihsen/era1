@@ -1,31 +1,22 @@
-const User = require('../models/user');
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
+const userLogic = require('../Logic/userLogic');
 
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
-
-        const hashPass = await bcrypt.hash(password, 10);
-
-        if (!username) {
-            return res.status(400).json({ error: 'username is required.' });
-        }
-
-        const newUser = await User.create({ username: username, email:email,  password: hashPass  });
-        res.status(201).json({ message: 'User created successfully.', user: newUser });
+        const newUser = await userLogic.createUserLogic(username,email,password);
+        res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Error creating user.' });
+        next(error);
     }
 };
 
 
-const getUserById = async (req, res) => {
+
+const getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const user = await User.findByPk(id);
+        const user = await userLogic.getUserByIdLogic(id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
@@ -33,100 +24,71 @@ const getUserById = async (req, res) => {
 
         res.status(200).json(user);
     } catch (error) {
-        console.error('Error fetching user by ID:', error);
-        res.status(500).json({ error: 'Error fetching user.' });
+        next(error);
     }
 };
 
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
         const id = req.user?.userId;
         const { username } = req.body;
-    
 
-        // Güncellenecek kullanıcı adı kontrolü
-        if (!username) {
-            return res.status(400).json({ error: 'Username is required.' });
-        }
+        const updatedUser = await userLogic.updateUserLogic(id, username);
 
-        // Kullanıcıyı ID ile bul
-        const user = await User.findByPk(id);
-
-        if (!user) {
+        if (!updatedUser) {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-        // Kullanıcıyı güncelle
-        user.username = username;
-        await user.save(); // Veritabanına değişiklikleri kaydet
-
-        res.status(200).json({ message: 'User updated successfully.', user });
+        res.status(200).json({ message: 'User updated successfully.', user: updatedUser });
     } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ error: 'Error updating user.' });
+        next(error);
     }
 };
 
 
-const deleteUser = async (req, res) => {
+
+
+const deleteUser = async (req, res, next) => {
     try {
         const id = req.user?.userId;
 
-        // Kullanıcıyı ID ile bul
-        const user = await User.findByPk(id);
+        const isDeleted = await userLogic.deleteUserLogic(id);
 
-        if (!user) {
+        if (!isDeleted) {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-        // Kullanıcıyı sil
-        await user.destroy();
-
         res.status(200).json({ message: 'User deleted successfully.' });
     } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).json({ error: 'Error deleting user.' });
+        next(error);
     }
 };
 
 
-const loginUser = async(req,res) => {
+
+const loginUser = async (req, res, next) => {
     try {
-        const {email,password} = req.body
-
-
-        const users = await User.findOne( {where:{email:email}})
-
-        if(!users || !bcrypt.compare(users.password, password)){
-            return res.status(404).json({ error: 'User not found.' });
+        const { email, password } = req.body;
+        const token = await userLogic.loginUserLogic(email, password);
+        res.status(200).json({ token });
+    } catch (error) {
+        if (error.message === 'User not found') {
+            return res.status(404).json({ error: error.message });
         }
-
-        const token = jwt.sign({userId: users.id, userName:users.username}, process.env.SECRET_KEY, {expiresIn:"1h"} )
-
-        return res.status(200).json({token})
-
-    } catch (error) {
-        console.log("error:",error);
-        return res.status(500).json({message:"UnExpected Error"})
+        next(error);
     }
+};
 
 
-}
-
-
-const verifyToken = async(req,res) => {
+const verifyToken = async (req, res) => {
     try {
-        const {userId, userName} = req.user
-        return res.status(200).json({userId, userName})
-
+        const { userId, userName } = req.user;
+        res.status(200).json({ userId, userName });
     } catch (error) {
-        console.log("error:",error);
-        return res.status(500).json({message:"UnExpected Error"})
+        res.status(500).json({ message: 'Unexpected error' });
     }
-
-
-}
+};
 
 
 module.exports = {
