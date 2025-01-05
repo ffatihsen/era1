@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllEvent, createEvent, updateEvent, deleteEvent, addParticipant, addComment } = require("../controllers/event");
+const { getAllEvent, createEvent, updateEvent, deleteEvent, addParticipant, addComment, getEventById } = require("../controllers/event");
 
 
 const {authChech} = require("../middleware/checkAuth")
@@ -9,6 +9,7 @@ const validationHandler = require("../utils/validators")
 const eventValidator = require("../utils/validators/eventValidator")
 
 router.get("/", getAllEvent);
+router.get("/:eventId",authChech, getEventById);
 router.post("/",authChech,validationHandler(eventValidator.createEvent), createEvent);
 router.put("/:id", authChech, validationHandler(eventValidator.updateEvent), updateEvent);
 router.delete("/:id",authChech, deleteEvent);

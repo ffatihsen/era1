@@ -83,10 +83,10 @@ export const postSignin = async (data) => {
   };
 
 
-  export const getEventById = async (token,id) => {
+  export const getEventById = async (token,id,newPage) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_EVENT_API_URI}/event/${id}`, 
+        `${process.env.REACT_APP_EVENT_API_URI}/event/${id}?page=${newPage}&limit=${6}`, 
         {
           headers: {
             Authorization: "Bearer " + token,

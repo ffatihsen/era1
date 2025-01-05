@@ -10,6 +10,21 @@ const getAllEvent = async (req, res, next) => {
     }
 };
 
+const getEventById = async (req, res, next) => {
+    try {
+        const { eventId } = req.params;
+        const { page = 1, limit = 6 } = req.query;
+
+      //  const events = await eventLogic.getEventByIdLogic(eventId);
+      const events = await eventLogic.getEventWithCommentsLogic(eventId, parseInt(page), parseInt(limit));
+
+        res.status(200).json(events);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 
 const createEvent = async (req, res, next) => {
     try {
@@ -100,4 +115,5 @@ module.exports = {
     deleteEvent,
     addParticipant,
     addComment,
+    getEventById,
 };
