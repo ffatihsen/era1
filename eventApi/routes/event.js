@@ -5,13 +5,15 @@ const { getAllEvent, createEvent, updateEvent, deleteEvent, addParticipant, addC
 
 const {authChech} = require("../middleware/checkAuth")
 
+const validationHandler = require("../utils/validators")
+const eventValidator = require("../utils/validators/eventValidator")
 
 router.get("/", getAllEvent);
-router.post("/",authChech, createEvent);
-router.put("/:id", authChech, updateEvent);
+router.post("/",authChech,validationHandler(eventValidator.createEvent), createEvent);
+router.put("/:id", authChech, validationHandler(eventValidator.updateEvent), updateEvent);
 router.delete("/:id",authChech, deleteEvent);
-router.post("/:eventId/participants",authChech, addParticipant);
-router.post("/:eventId/comments", authChech, addComment);
+router.post("/:eventId/participants",authChech, validationHandler(eventValidator.addParticipant), addParticipant);
+router.post("/:eventId/comments", authChech, validationHandler(eventValidator.addComment), addComment);
 
 
 
