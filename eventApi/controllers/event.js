@@ -3,8 +3,8 @@ const eventLogic = require('../Logic/eventLogic');
 
 const getAllEvent = async (req, res, next) => {
     try {
-        const { date } = req.query;
-        const events = await eventLogic.getAllEventsLogic(date);
+        const { date,searchkey } = req.query;
+        const events = await eventLogic.getAllEventsLogic(date,searchkey);
         res.status(200).json(events);
     } catch (error) {
         next(error);

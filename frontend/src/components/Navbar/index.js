@@ -57,6 +57,7 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [token, setToken] = React.useState(null); 
+  const [searchValue, setSearchValue] = React.useState('');
 
   const navigate = useNavigate();
 
@@ -156,6 +157,17 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
 
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      console.log('Search Value:', searchValue);
+      window.location.href = "/feed?searchkey=" + searchValue;
+    }
+  };
+
+
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: '#ffffff', color: 'black' }}>
@@ -174,7 +186,13 @@ export default function PrimarySearchAppBar() {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+            <StyledInputBase
+        placeholder="Search…"
+        inputProps={{ 'aria-label': 'search' }}
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)} 
+        onKeyDown={handleKeyPress}
+      />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

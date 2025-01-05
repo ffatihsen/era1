@@ -5,7 +5,7 @@ import PrimarySearchAppBar from '../components/Navbar';
 import BasicDateCalendar from '../components/BasicCalendar';
 import EventForm from '../components/EventForm';
 import EventList from '../components/EventList';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { postCheckAuth } from '../Services';
 import Toastbox from '../components/Toastbox';
 
@@ -13,6 +13,14 @@ const Feed = () => {
   let token = localStorage.getItem('token');
 
   const navigate = useNavigate();
+
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchkey = searchParams.get('searchkey');
+
+
+
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -91,7 +99,7 @@ const Feed = () => {
 
           <Grid item xs={12} md={8}>
 
-            <EventList refresh={refresh} setRefresh ={setRefresh} date={date} setDate={setDate} />
+            <EventList refresh={refresh} setRefresh ={setRefresh} date={date} setDate={setDate} searchkey={searchkey} />
 
           </Grid>
 

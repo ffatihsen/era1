@@ -65,10 +65,10 @@ export const postSignin = async (data) => {
   };
 
 
-  export const getEvents = async (token,date) => {
+  export const getEvents = async (token,date,searchkey) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_EVENT_API_URI}/event/?date=${date}`, 
+        `${process.env.REACT_APP_EVENT_API_URI}/event/?date=${date}&searchkey=${searchkey}`, 
         {
           headers: {
             Authorization: "Bearer " + token,

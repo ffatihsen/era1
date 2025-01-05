@@ -8,7 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ShareIcon from '@mui/icons-material/Share';
 import { useNavigate } from 'react-router';
 
-const EventList = ({ refresh, setRefresh , date,setDate }) => {
+const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
   const token = localStorage.getItem('token');
   const [eventData, setEventData] = useState([]);
 
@@ -17,7 +17,7 @@ const EventList = ({ refresh, setRefresh , date,setDate }) => {
 
   const getEventList = async () => {
     try {
-      const res = await getEvents(token, date);
+      const res = await getEvents(token, date, searchkey);
       if (res.status === 200) {
         setEventData(res.data);
       }
