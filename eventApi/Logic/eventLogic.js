@@ -8,7 +8,7 @@ const getAllEventsLogic = async (date, searchkey) => {
       query.date = new Date(date);
     }
   
-    if (searchkey && searchkey !== "false" && searchkey !== undefined) {
+    if (searchkey && searchkey !== "false" && searchkey !== undefined && searchkey != "null") {
       query.title = { $regex: searchkey, $options: 'i' };
     }
   
