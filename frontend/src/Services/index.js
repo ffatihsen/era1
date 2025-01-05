@@ -40,7 +40,6 @@ export const postSignin = async (data) => {
       );
       return response;
     } catch (error) {
-      console.error('Error posting user details:', error);
       throw error;
     }
   };
@@ -61,7 +60,82 @@ export const postSignin = async (data) => {
       );
       return response;
     } catch (error) {
-      console.error('Error posting user details:', error);
+      throw error;
+    }
+  };
+
+
+  export const getEvents = async (token) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_EVENT_API_URI}/event/`, 
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          }
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error; 
+    }
+  };
+
+
+  export const getEventById = async (token,id) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_EVENT_API_URI}/event/${id}`, 
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          }
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error; 
+    }
+  };
+
+
+  export const postJoinEvent = async (token, eventId) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_EVENT_API_URI}/event/${eventId}/participants`,
+        {}, 
+        {
+          headers: {
+            Authorization:  "Bearer " + token,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+
+  export const postAddComment = async (token, eventId, comment) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_EVENT_API_URI}/event/${eventId}/comments`,
+        comment, 
+        {
+          headers: {
+            Authorization:  "Bearer " + token,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   };

@@ -4,7 +4,7 @@ import React from 'react';
 import { postCreateEvent } from '../../Services';
 import Toastbox from '../Toastbox';
 
-const EventForm = ({ formData, setFormData }) => {
+const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
     const token = localStorage.getItem('token');
 
     const validateForm = () => {
@@ -29,6 +29,10 @@ const EventForm = ({ formData, setFormData }) => {
 
             if (res.status === 201) {
                 Toastbox("success", "Event created successfully!");
+                setRefresh(Math.floor(Math.random() * 1000000))
+
+
+               
 
                
                 resetForm();

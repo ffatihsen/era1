@@ -40,6 +40,7 @@ const Feed = () => {
   }, [token, navigate]);
 
 
+  const [refresh, setRefresh] = useState(false)
  
   const [formData, setFormData] = useState({
     title: '',
@@ -81,14 +82,14 @@ const Feed = () => {
             </Paper>
 
 
-            <EventForm formData={formData} setFormData = {setFormData} />
+            <EventForm formData={formData} setFormData = {setFormData} refresh={refresh} setRefresh ={setRefresh} />
             
           </Grid>
 
 
           <Grid item xs={12} md={8}>
 
-            <EventList />
+            <EventList refresh={refresh} setRefresh ={setRefresh} />
 
           </Grid>
 

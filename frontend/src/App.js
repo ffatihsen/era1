@@ -6,6 +6,7 @@ import Signin from './pages/SignIn';
 import Signup from './pages/SignUp';
 import { ToastContainer } from 'react-toastify';
 import Feed from './pages/Feed';
+import EventDetail from './pages/EventDetail';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/feed" element={<Feed />} />
+      <Route path="/feed/:eventId" element={<EventDetail />} />
 
       </Routes>
 
