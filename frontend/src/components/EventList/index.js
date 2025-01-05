@@ -8,7 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ShareIcon from '@mui/icons-material/Share';
 import { useNavigate } from 'react-router';
 
-const EventList = ({ refresh, setRefresh }) => {
+const EventList = ({ refresh, setRefresh , date,setDate }) => {
   const token = localStorage.getItem('token');
   const [eventData, setEventData] = useState([]);
 
@@ -17,19 +17,21 @@ const EventList = ({ refresh, setRefresh }) => {
 
   const getEventList = async () => {
     try {
-      const res = await getEvents(token);
+      const res = await getEvents(token, date);
       if (res.status === 200) {
         setEventData(res.data);
       }
     } catch (error) {
-      const message = error.response?.data?.message || "An unexpected error occurred!";
+      let message = error.response?.data?.message || error.response?.data.error ;
+      message = message.length > 0 ? message :  "An unexpected error occurred!"
+
       Toastbox("error", message);
     }
   };
 
   useEffect(() => {
     getEventList();
-  }, [refresh]);
+  }, [refresh,date]);
 
   const formatDate = (date) => {
     const eventDate = new Date(date);

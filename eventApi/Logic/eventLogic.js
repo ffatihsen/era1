@@ -1,8 +1,20 @@
 const { default: mongoose } = require('mongoose');
 const Event = require('../models/event');
 
-const getAllEventsLogic = async () => {
-    const events = await Event.find().select('_id title date organizer');
+const getAllEventsLogic = async (date) => {
+
+    let query = {}
+   
+    if(date && date!="false" && date != null){
+        query = { date: new Date(date) }
+    }
+    else{
+        query = {}
+    }
+
+
+    const events = await Event.find(query).select('_id title date organizer');
+
     if (!events || events.length === 0) {
         throw new Error('No events found.');
     }

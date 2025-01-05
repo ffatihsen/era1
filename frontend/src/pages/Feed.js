@@ -41,6 +41,7 @@ const Feed = () => {
 
 
   const [refresh, setRefresh] = useState(false)
+  const [date, setDate] = useState(false)
  
   const [formData, setFormData] = useState({
     title: '',
@@ -48,6 +49,7 @@ const Feed = () => {
     location: '',
     organizer: '',
   });
+
 
 
 
@@ -78,7 +80,7 @@ const Feed = () => {
                 textAlign: 'center',
               }}
             >
-              <BasicDateCalendar />
+              <BasicDateCalendar date={date} setDate={setDate} />
             </Paper>
 
 
@@ -89,7 +91,7 @@ const Feed = () => {
 
           <Grid item xs={12} md={8}>
 
-            <EventList refresh={refresh} setRefresh ={setRefresh} />
+            <EventList refresh={refresh} setRefresh ={setRefresh} date={date} setDate={setDate} />
 
           </Grid>
 
