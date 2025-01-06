@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, getUserById, updateUser, deleteUser, loginUser, verifyToken } = require('../controllers/userController');
+const { createUser, getUserById, updateUser, deleteUser, loginUser, verifyToken,getEmailByUserName } = require('../controllers/userController');
 
 
 const {authChech} = require("../middleware/CheckAuth")
@@ -15,5 +15,6 @@ router.put('/', authChech, validationHandler(userValidator.updateUser), updateUs
 router.delete('/', authChech, deleteUser);
 router.post('/login', validationHandler(userValidator.loginUser), loginUser);
 router.post('/verify', authChech,validationHandler(userValidator.verifyToken),  verifyToken);
+router.post('/get-email', validationHandler(userValidator.getUserByUserName),  getEmailByUserName);
 
 module.exports = router;

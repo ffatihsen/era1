@@ -1,8 +1,8 @@
-import { Paper, Typography, Button, IconButton } from '@mui/material';
+import { Paper, Typography, Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import EventIcon from '@mui/icons-material/Event';
 import { Box } from '@mui/system';
-import { getEvents, postJoinEvent } from '../../Services';
+import { getEvents, postJoinEvent, postShareEvent } from '../../Services';
 import Toastbox from '../Toastbox';
 import InfoIcon from '@mui/icons-material/Info';
 import ShareIcon from '@mui/icons-material/Share';
@@ -16,8 +16,11 @@ const EventList = ({ refresh, setRefresh, date, setDate, searchkey }) => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 6;
 
-  const navigate = useNavigate();
+  const [openShareModal, setOpenShareModal] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [friendUsername, setFriendUsername] = useState('');
 
+  const navigate = useNavigate();
 
   const getEventList = async () => {
     if (loading || !hasMore) return;
@@ -32,10 +35,7 @@ const EventList = ({ refresh, setRefresh, date, setDate, searchkey }) => {
         }
       }
     } catch (error) {
-      console.log("error:",error);
-      // let message = error.response?.data?.message || error.response?.data.error;
-      // message = message.length > 0 ? message : "An unexpected error occurred!";
-      // Toastbox("error", message);
+      console.log("error:", error);
     } finally {
       setLoading(false);
     }
@@ -80,8 +80,32 @@ const EventList = ({ refresh, setRefresh, date, setDate, searchkey }) => {
   };
 
   const handleShareEvent = (eventId) => {
-    console.log(`Paylaşılmak istenilen etkinlik ID: ${eventId}`);
+    setSelectedEventId(eventId);
+    setOpenShareModal(true);
   };
+
+  const handleModalClose = () => {
+    setOpenShareModal(false);
+    setFriendUsername('');
+  };
+
+  const handleShareSubmit = async () => {
+    setOpenShareModal(false);
+    setFriendUsername('');
+    await postShareEventFunc()
+  };
+
+  const postShareEventFunc = async() => {
+    try {
+      let res = await postShareEvent(token,selectedEventId,friendUsername)
+      if(res.status == 200){
+        Toastbox("success", "Mail send your Friend")
+      }
+    } catch (error) {
+      const message = error.response?.data?.error || "An unexpected error occurred!";
+      Toastbox("error", message);
+    }
+  }
 
   return (
     <div>
@@ -163,6 +187,32 @@ const EventList = ({ refresh, setRefresh, date, setDate, searchkey }) => {
           )}
         </Box>
       </Paper>
+
+
+      <Dialog open={openShareModal} onClose={handleModalClose}>
+        <DialogTitle>Share Event</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="friendUsername"
+            label="Friend's Username"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={friendUsername}
+            onChange={(e) => setFriendUsername(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleShareSubmit} color="primary">
+            Share
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

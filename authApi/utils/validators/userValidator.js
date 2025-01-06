@@ -31,6 +31,16 @@ const getUser = Joi.object({
     }).required(),
 });
 
+const getUserByUserName = Joi.object({
+    body: Joi.object({
+      userName: Joi.string()
+        .min(3)
+        .max(100)
+        .required()
+        .label('userName'),
+    }).required()
+  });
+
 // Kullanıcı güncelleme (PUT) için validasyon
 const updateUser = Joi.object({
     body: Joi.object({
@@ -72,4 +82,5 @@ module.exports = {
     updateUser,
     loginUser,
     verifyToken,
+    getUserByUserName,
 };

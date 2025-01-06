@@ -1,5 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const Event = require('../models/event');
+const axios = require('axios');
 
 const getAllEventsLogic = async (date, searchkey, page = 1, limit = 6) => {
     let query = {};
@@ -26,6 +27,67 @@ const getAllEventsLogic = async (date, searchkey, page = 1, limit = 6) => {
   
     return events;
 };
+
+
+
+const shareEventLogic = async (req, eventId, userName) => {
+    try {
+      // Step 1: Fetch the event
+      const event = await Event.findById(eventId);
+      if (!event) {
+        throw new Error('Event not found.');
+      }
+  
+      // Step 2: Fetch the user's email
+      const token = req.headers.authorization.split(" ")[1];
+      const emailResponse = await axios.post(
+        `${process.env.AUTH_API_URL}/users/get-email`,
+        { userName },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (emailResponse.status !== 200 || !emailResponse.data.email) {
+        throw new Error('User not found.');
+      }
+  
+      const email = emailResponse.data.email;
+  
+      // Step 3: Prepare email content
+      const eventLink = `http://localhost:3000/feed/${eventId}`;
+      const emailContent = `
+        Hello ${userName}, 
+        
+        ${req.user.userName} has invited you to join this event. 
+        They would like to participate in this event together with you. 
+        
+        If you are interested, you can view and join the event using the link below:
+        <a href="${eventLink}">Click here</a>
+      `;
+  
+      // Step 4: Send the email
+      const mailResponse = await axios.post(
+        `${process.env.NOTF_API_URL}/mail/send`,
+        {
+          toMail: email,
+          toUserName: userName,
+          senderName: req.user.userName,
+          senderId: req.user.userId,
+          subject: "Share Event",
+          content: emailContent,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (mailResponse.status === 200) {
+        console.log("Email sent successfully.");
+      } else {
+        console.log("Failed to send email.");
+      }
+    } catch (error) {
+      console.error("Error in shareEventLogic:", error.message);
+      throw new Error('An error occurred while sharing the event.');
+    }
+  };
 
 const getEventByIdLogic = async (eventId) => {
 
@@ -208,4 +270,5 @@ module.exports = {
     removeParticipantLogic,
     joinedParticipantLogic,
     createdParticipantLogic,
+    shareEventLogic,
 };

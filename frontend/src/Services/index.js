@@ -235,3 +235,22 @@ export const postSignin = async (data) => {
       throw error; 
     }
   };
+
+
+  export const postShareEvent = async (token, eventId, data) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_EVENT_API_URI}/event/${eventId}/share`,
+        {userName:data},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          responseType: 'blob'
+        }
+      );
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };

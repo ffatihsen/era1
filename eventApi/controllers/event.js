@@ -24,6 +24,17 @@ const getEventById = async (req, res, next) => {
         next(error);
     }
 };
+const shareEventById = async (req, res, next) => {
+    try {
+        const { eventId } = req.params;
+
+        const events = await eventLogic.shareEventLogic(req,eventId, req.body.userName );
+
+        res.status(200).json({message:"Mail send your Friend"});
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getJoinedEvent = async (req, res, next) => {
     try {
@@ -164,4 +175,5 @@ module.exports = {
     removeParticipant,
     getJoinedEvent,
     getCreatedEvent,
+    shareEventById,
 };

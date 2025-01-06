@@ -44,10 +44,29 @@ const loginUserLogic = async (email, password) => {
     );
 };
 
+const getEmailByUserNameLogic = async (userName) => {
+    try {
+      
+      const user = await User.findOne({
+        where: { username: userName } 
+      });
+  
+      if (!user) {
+        return null;
+      }
+  
+      return user.email;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error while fetching the user');
+    }
+  };
+
 module.exports = {
     createUserLogic,
     getUserByIdLogic,
     updateUserLogic,
     deleteUserLogic,
     loginUserLogic,
+    getEmailByUserNameLogic
 };
