@@ -1,7 +1,7 @@
 const { default: mongoose } = require('mongoose');
 const Event = require('../models/event');
 
-const getAllEventsLogic = async (date, searchkey) => {
+const getAllEventsLogic = async (date, searchkey, page = 1, limit = 6) => {
     let query = {};
   
     if (date && date !== "false" && date != null) {
@@ -12,14 +12,20 @@ const getAllEventsLogic = async (date, searchkey) => {
       query.title = { $regex: searchkey, $options: 'i' };
     }
   
-    const events = await Event.find(query).select('_id title date organizer');
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    const events = await Event.find(query)
+        .skip(skip)
+        .limit(limit)
+        .select('_id title date organizer');
   
     if (!events || events.length === 0) {
       throw new Error('No events found.');
     }
   
     return events;
-  };
+};
 
 const getEventByIdLogic = async (eventId) => {
 

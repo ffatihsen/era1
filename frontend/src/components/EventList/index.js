@@ -8,30 +8,50 @@ import InfoIcon from '@mui/icons-material/Info';
 import ShareIcon from '@mui/icons-material/Share';
 import { useNavigate } from 'react-router';
 
-const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
+const EventList = ({ refresh, setRefresh, date, setDate, searchkey }) => {
   const token = localStorage.getItem('token');
   const [eventData, setEventData] = useState([]);
-
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 6;
 
   const navigate = useNavigate();
 
+
   const getEventList = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
     try {
-      const res = await getEvents(token, date, searchkey);
+      const res = await getEvents(token, date, searchkey, page, limit);
       if (res.status === 200) {
-        setEventData(res.data);
+        if (res.data.length === 0) {
+          setHasMore(false);
+        } else {
+          setEventData((prevData) => [...prevData, ...res.data]);
+        }
       }
     } catch (error) {
-      let message = error.response?.data?.message || error.response?.data.error ;
-      message = message.length > 0 ? message :  "An unexpected error occurred!"
-
-      Toastbox("error", message);
+      console.log("error:",error);
+      // let message = error.response?.data?.message || error.response?.data.error;
+      // message = message.length > 0 ? message : "An unexpected error occurred!";
+      // Toastbox("error", message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getEventList();
-  }, [refresh,date]);
+  }, [refresh, date, page]);
+
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight === e.target.scrollTop + e.target.clientHeight;
+
+    if (bottom && !loading && hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   const formatDate = (date) => {
     const eventDate = new Date(date);
@@ -43,21 +63,20 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
     });
   };
 
-  const handleJoinEvent = async(eventId) => {
+  const handleJoinEvent = async (eventId) => {
     try {
-      let res = await postJoinEvent(token,eventId)
-      if(res.status == 200){
+      let res = await postJoinEvent(token, eventId);
+      if (res.status == 200) {
         Toastbox("success", res.data.message);
       }
     } catch (error) {
       const message = error.response?.data?.error || "An unexpected error occurred!";
       Toastbox("error", message);
     }
-
   };
 
   const handleViewDetails = (eventId) => {
-    navigate('/feed/'+eventId);
+    navigate('/feed/' + eventId);
   };
 
   const handleShareEvent = (eventId) => {
@@ -73,7 +92,6 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          overflowY: 'auto',
         }}
       >
         <EventIcon sx={{ fontSize: 50, color: 'primary.main' }} />
@@ -81,11 +99,18 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
           Events
         </Typography>
 
-        <Box sx={{ marginTop: 2, maxHeight: '70vh', overflowY: 'scroll' }}>
+        <Box
+          sx={{
+            marginTop: 2,
+            maxHeight: '70vh',
+            overflowY: 'auto',
+          }}
+          onScroll={handleScroll}
+        >
           {eventData.length > 0 ? (
             eventData.map((item) => (
               <Box
-                key={item.id}  
+                key={item._id}
                 sx={{
                   marginBottom: 2,
                   padding: 2,
@@ -102,38 +127,38 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
                     Date: {formatDate(item.date)}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                  Organizer: {item.organizer}
+                    Organizer: {item.organizer}
                   </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: 1 }}>
-               
-                <IconButton onClick={() => handleViewDetails(item._id)}>
-                  <InfoIcon sx={{ color: 'primary.main' }} />
-                </IconButton>
+                  <IconButton onClick={() => handleViewDetails(item._id)}>
+                    <InfoIcon sx={{ color: 'primary.main' }} />
+                  </IconButton>
 
-               
-                <IconButton onClick={() => handleShareEvent(item._id)}>
-                  <ShareIcon sx={{ color: 'primary.main' }} />
-                </IconButton>
+                  <IconButton onClick={() => handleShareEvent(item._id)}>
+                    <ShareIcon sx={{ color: 'primary.main' }} />
+                  </IconButton>
 
-                
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleJoinEvent(item._id)}
-                  sx={{ height: 'fit-content' }}
-                >
-                  Join
-                </Button>
-              </Box>
-
-
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleJoinEvent(item._id)}
+                    sx={{ height: 'fit-content' }}
+                  >
+                    Join
+                  </Button>
+                </Box>
               </Box>
             ))
           ) : (
             <Typography variant="body2" color="textSecondary">
               There are no events yet.
+            </Typography>
+          )}
+          {!hasMore && (
+            <Typography variant="body2" color="textSecondary" sx={{ marginTop: 2 }}>
+              No more events to show.
             </Typography>
           )}
         </Box>
