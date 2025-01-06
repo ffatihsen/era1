@@ -55,6 +55,11 @@ const createEvent = async (req, res, next) => {
         const { title, description, date, location, organizer } = req.body;
         const { userId, userName } = req.user;
 
+        let photoBase64 = null;
+        if (req.file) {
+            photoBase64 = req.file.buffer.toString('base64');
+        }
+
         const newEvent = await eventLogic.createEventLogic({
             title,
             description,
@@ -63,10 +68,12 @@ const createEvent = async (req, res, next) => {
             organizer,
             userId,
             userName,
+            photo: photoBase64,
         });
 
         res.status(201).json({ message: 'Event created successfully.', event: newEvent });
     } catch (error) {
+        console.log("99 da error:",error);
         next(error);
     }
 };

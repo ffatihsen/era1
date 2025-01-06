@@ -41,7 +41,7 @@ const getEventWithCommentsLogic = async (eventId, page = 1, limit = 6) => {
     const skip = (page - 1) * limit;
 
     const event = await Event.findById(eventId)
-        .select('_id title description date location organizer')
+        .select('_id title description date location organizer photo')
         .lean();
 
     if (!event) {
@@ -71,6 +71,7 @@ const getEventWithCommentsLogic = async (eventId, page = 1, limit = 6) => {
         comments: comments.length > 0 ? comments[0].comments : [],
     };
 };
+
 
 
 const createEventLogic = async (eventData) => {
@@ -167,7 +168,7 @@ const joinedParticipantLogic = async ( userId) => {
 
     const joinedEvents = await Event.find({
         'participants.userId': userId,
-    });
+    }).select('_id title description date location organizer');
 
     if (!joinedEvents.length) {
         throw new Error('No events were found that the user attended.');
@@ -178,7 +179,7 @@ const joinedParticipantLogic = async ( userId) => {
 
 const createdParticipantLogic = async ( userId) => {
    
-    const createdEvents = await Event.find({ userId: userId });
+    const createdEvents = await Event.find({ userId: userId }).select('_id title description date location organizer');
 
     if (!createdEvents.length) {
         throw new Error('No user created events found.');

@@ -103,11 +103,11 @@ const EventDetail = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 600 }}>
-            <img
-              src={event.photo || '/evenActivityPhoto.webp'}
-              alt="Event"
-              style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
-            />
+          <img
+          src={event.photo ? `data:image/jpeg;base64,${event.photo}` : '/evenActivityPhoto.webp'}
+          alt="Event"
+          style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
+        />
           </Box>
 
           <Paper sx={{ width: '100%', maxWidth: 600, padding: 3 }}>

@@ -1,14 +1,14 @@
 import { Button, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
+import React, { useState } from 'react';
 import { postCreateEvent } from '../../Services';
 import Toastbox from '../Toastbox';
 
 const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
     const token = localStorage.getItem('token');
+    const [photo, setPhoto] = useState(null);
 
     const validateForm = () => {
-        
         const { title, description, location, organizer, date } = formData;
         return (
             title.length > 3 &&
@@ -23,23 +23,39 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
         if (!validateForm()) {
             return Toastbox("warning", "Please fill in all fields!");
         }
-
+   
+        if (photo && !validatePhoto(photo)) {
+            return Toastbox("warning", "Please upload a valid image (.png or .jpg) under 2MB.");
+        }
+   
         try {
-            const res = await postCreateEvent(token, formData);
-
+            const formDataWithPhoto = new FormData();
+            formDataWithPhoto.append('title', formData.title);
+            formDataWithPhoto.append('description', formData.description);
+            formDataWithPhoto.append('date', formData.date);
+            formDataWithPhoto.append('location', formData.location);
+            formDataWithPhoto.append('organizer', formData.organizer);
+            if (photo) {
+                formDataWithPhoto.append('photo', photo);
+            }
+   
+            const res = await postCreateEvent(token, formDataWithPhoto);
+   
             if (res.status === 201) {
                 Toastbox("success", "Event created successfully!");
                 setRefresh(Math.floor(Math.random() * 1000000))
-
-
-               
-
-               
                 resetForm();
             }
         } catch (error) {
             handleError(error);
         }
+    };
+
+    const validatePhoto = (photo) => {
+        const validTypes = ['image/png', 'image/jpeg'];
+        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+
+        return validTypes.includes(photo.type) && photo.size <= maxSize;
     };
 
     const handleInputChange = (e) => {
@@ -50,6 +66,13 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
         }));
     };
 
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPhoto(file);
+        }
+    };
+
     const resetForm = () => {
         setFormData({
             title: '',
@@ -58,6 +81,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
             organizer: '',
             date: '',
         });
+        setPhoto(null); // Clear the photo state
     };
 
     const handleError = (error) => {
@@ -73,7 +97,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
     return (
         <div>
             <Typography variant="h6" sx={{ marginTop: 3, backgroundColor: 'rgba(151,202,209,.08)' }}>
-            Create New Event
+                Create New Event
             </Typography>
             <Box sx={{ marginTop: 2, backgroundColor: 'rgba(151,202,209,.08)' }}>
                 <TextField
@@ -112,7 +136,6 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                     onChange={handleInputChange}
                     sx={{ marginBottom: 2 }}
                 />
-         
                 <TextField
                     fullWidth
                     label="Date"
@@ -125,6 +148,14 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                     InputLabelProps={{
                         shrink: true,
                     }}
+                />
+                
+                {/* Photo input */}
+                <input
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    onChange={handlePhotoChange}
+                    style={{ marginBottom: '16px' }}
                 />
 
                 <Button
@@ -139,7 +170,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                     }}
                     onClick={handleCreateEvent}
                 >
-                   Create Event
+                    Create Event
                 </Button>
             </Box>
         </div>

@@ -30,12 +30,12 @@ export const postSignin = async (data) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_EVENT_API_URI}/event`,
-        data, 
+        data,
         {
           headers: {
             Authorization: "Bearer " + token,
-            'Content-Type': 'application/json',
-          }
+          },
+          responseType: 'blob'
         }
       );
       return response;
@@ -43,6 +43,7 @@ export const postSignin = async (data) => {
       throw error;
     }
   };
+  
 
 
 

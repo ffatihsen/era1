@@ -25,7 +25,8 @@ const eventSchema = new mongoose.Schema({
   userId:{ type: Number, required: true }, 
   userName:{ type: String, required: true },
   participants: [participantSchema],
-  comments: [commentSchema] 
+  comments: [commentSchema] ,
+  photo: { type: String },
 }, { timestamps: true });
 
 

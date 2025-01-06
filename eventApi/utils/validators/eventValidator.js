@@ -9,13 +9,19 @@ const objectIdValidator = (value, helpers) => {
 };
 
 const createEvent = Joi.object({
-    body: Joi.object({
-        title: Joi.string().min(3).max(100).required().label('Title'),
-        description: Joi.string().min(10).max(500).required().label('Description'),
-        date: Joi.date().iso().required().label('Date'),
-        location: Joi.string().min(3).max(100).required().label('Location'),
-        organizer: Joi.string().optional().label('Organizer'),
-    }).required(),
+    title: Joi.string().min(3).max(100).required().label('Title'),
+    description: Joi.string().min(10).max(500).required().label('Description'),
+    date: Joi.date().iso().required().label('Date'),
+    location: Joi.string().min(3).max(100).required().label('Location'),
+    organizer: Joi.string().optional().label('Organizer'),
+    // Photo validation for file upload
+    photo: Joi.alternatives().try(
+        Joi.string().base64().max(2 * 1024 * 1024).optional(), // If photo is base64 encoded string
+        Joi.object().keys({
+            size: Joi.number().max(2 * 1024 * 1024).optional(),  // Ensure file size is under 2MB
+            mimetype: Joi.string().valid('image/jpeg', 'image/png').optional() // Only accept image/jpeg or image/png
+        }).optional()
+    ).optional()
 });
 
 const updateEvent = Joi.object({
