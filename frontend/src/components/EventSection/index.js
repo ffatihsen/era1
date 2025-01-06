@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Grid, Card, CardContent, Typography, Button } from '@mui/material';
+import { useNavigate } from 'react-router';
 
 const events = [
   { title: 'Tech Meetup', description: 'Join the latest discussions about tech.' },
@@ -7,7 +8,13 @@ const events = [
   { title: 'Outdoor Adventures', description: 'For those who enjoy outdoor activities.' }
 ];
 
+
+
+
+
 const EventSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -24,7 +31,7 @@ const EventSection = () => {
                 <Typography variant="body2" color="textSecondary">
                   {event.description}
                 </Typography>
-                <Button variant="outlined" sx={{ marginTop: 2 }}>
+                <Button variant="outlined" sx={{ marginTop: 2 }} onClick={() => {navigate("/feed")}} >
                   Join Event
                 </Button>
               </CardContent>

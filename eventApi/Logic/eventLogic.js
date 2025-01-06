@@ -142,6 +142,53 @@ const deleteEventLogic = async (id, userId) => {
     return 'Event deleted successfully.';
 };
 
+
+const removeParticipantLogic = async (eventId, userId) => {
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+        throw new Error('No events found.');
+    }
+
+    const participantIndex = event.participants.findIndex(participant => participant.userId === userId);
+    if (participantIndex === -1) {
+        throw new Error('User is not a participant of the event.');
+    }
+
+    event.participants.splice(participantIndex, 1);
+
+    await event.save();
+
+    return event;
+};
+
+
+const joinedParticipantLogic = async ( userId) => {
+
+    const joinedEvents = await Event.find({
+        'participants.userId': userId,
+    });
+
+    if (!joinedEvents.length) {
+        throw new Error('No events were found that the user attended.');
+    }
+    return joinedEvents;
+};
+
+
+const createdParticipantLogic = async ( userId) => {
+   
+    const createdEvents = await Event.find({ userId: userId });
+
+    if (!createdEvents.length) {
+        throw new Error('No user created events found.');
+    }
+    return createdEvents
+
+};
+
+
+
 module.exports = {
     getAllEventsLogic,
     createEventLogic,
@@ -150,5 +197,8 @@ module.exports = {
     updateEventLogic,
     deleteEventLogic,
     getEventByIdLogic,
-    getEventWithCommentsLogic
+    getEventWithCommentsLogic,
+    removeParticipantLogic,
+    joinedParticipantLogic,
+    createdParticipantLogic,
 };

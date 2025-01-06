@@ -30,7 +30,6 @@ export default function Signup() {
       return;
     }
 
-    // Fake backend request simulation (Replace with actual API call)
     if (username && email.includes('@') && password.length >= 6) {
       
       try {
@@ -87,7 +86,7 @@ export default function Signup() {
         }}
       >
         <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-          Üye Ol
+          Sign Up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           <TextField
@@ -95,7 +94,7 @@ export default function Signup() {
             required
             fullWidth
             id="username"
-            label="Kullanıcı Adı"
+            label="User name"
             name="username"
             autoFocus
             value={username}
@@ -106,7 +105,7 @@ export default function Signup() {
             required
             fullWidth
             id="email"
-            label="E-posta Adresi"
+            label="Email Address"
             name="email"
             autoComplete="email"
             value={email}
@@ -117,7 +116,7 @@ export default function Signup() {
             required
             fullWidth
             name="password"
-            label="Şifre"
+            label="Password"
             type="password"
             id="password"
             autoComplete="new-password"
@@ -129,7 +128,7 @@ export default function Signup() {
             required
             fullWidth
             name="confirmPassword"
-            label="Şifre Tekrarı"
+            label="Repeat Password"
             type="password"
             id="confirmPassword"
             value={confirmPassword}
@@ -151,7 +150,7 @@ export default function Signup() {
               ':hover': { backgroundColor: 'primary.dark' },
             }}
           >
-            Kayıt Ol
+            Sign Up
           </Button>
           <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
             <Link
@@ -160,7 +159,7 @@ export default function Signup() {
               color="text.secondary"
               onClick={() => navigate('/signin')}
             >
-              Hesabınız var mı? Giriş yap
+              Do you have an account? Log in
             </Link>
           </Box>
         </Box>

@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, Typography, Grid, Button } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
+import { useNavigate } from 'react-router';
 
 const FriendshipsOnMeetup = () => {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ padding: 6, backgroundColor: '#f9f9f9' }}>
       <Grid 
@@ -45,6 +48,7 @@ const FriendshipsOnMeetup = () => {
             variant="contained" 
             color="primary" 
             sx={{ padding: '10px 20px', fontSize: '16px', textTransform: 'none' }}
+            onClick={() => {navigate("/feed")}}
           >
             Learn More
           </Button>

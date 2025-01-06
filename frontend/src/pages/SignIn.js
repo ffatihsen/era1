@@ -76,7 +76,7 @@ export default function Signin() {
         }}
       >
         <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-          Giriş Yap
+          Sign in
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           <TextField
@@ -84,7 +84,7 @@ export default function Signin() {
             required
             fullWidth
             id="email"
-            label="E-posta Adresi"
+            label="Email Address"
             name="email"
             autoComplete="email"
             autoFocus
@@ -96,7 +96,7 @@ export default function Signin() {
             required
             fullWidth
             name="password"
-            label="Şifre"
+            label="Password"
             type="password"
             id="password"
             autoComplete="current-password"

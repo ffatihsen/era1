@@ -72,7 +72,8 @@ export default function PrimarySearchAppBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+     setAnchorEl(event.currentTarget);
+    //navigate("/profile")
   };
 
   const handleMobileMenuClose = () => {
@@ -96,6 +97,10 @@ export default function PrimarySearchAppBar() {
     navigate('/signup'); 
   };
 
+  const handleFeedNavigation = () => {
+    navigate('/feed');
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -113,8 +118,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => {navigate("/feed")}}>Feed</MenuItem>
+      <MenuItem onClick={() => {handleMenuClose(); navigate("/profile");}}>Profile</MenuItem>
+      <MenuItem onClick={() => {handleMenuClose(); navigate("/feed")}}>Feed</MenuItem>
     </Menu>
   );
 
@@ -136,18 +141,43 @@ export default function PrimarySearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       {token ? (
-        <MenuItem onClick={handleProfileMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls={menuId}
-            aria-haspopup="true"
-            color="inherit"
+        <>
+          <MenuItem
+            onClick={() => {
+              handleMobileMenuClose();
+              navigate("/profile"); // Profile yönlendirmesi
+            }}
           >
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <p>Profile</p>
+          </MenuItem>
+  
+          <MenuItem
+            onClick={() => {
+              handleMobileMenuClose();
+              navigate("/feed"); // Feed yönlendirmesi
+            }}
+          >
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <p>Feed</p>
+          </MenuItem>
+        </>
       ) : (
         <>
           <MenuItem onClick={handleSignin}>Sign In</MenuItem>
@@ -156,6 +186,7 @@ export default function PrimarySearchAppBar() {
       )}
     </Menu>
   );
+  
 
 
   const handleKeyPress = (event) => {

@@ -78,7 +78,7 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
       >
         <EventIcon sx={{ fontSize: 50, color: 'primary.main' }} />
         <Typography variant="h6" sx={{ marginTop: 2 }}>
-          Etkinlikler
+          Events
         </Typography>
 
         <Box sx={{ marginTop: 2, maxHeight: '70vh', overflowY: 'scroll' }}>
@@ -99,10 +99,10 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
                 <Box>
                   <Typography variant="body1">{item.title}</Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Tarih: {formatDate(item.date)}
+                    Date: {formatDate(item.date)}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Organizatör: {item.organizer}
+                  Organizer: {item.organizer}
                   </Typography>
                 </Box>
 
@@ -124,7 +124,7 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
                   onClick={() => handleJoinEvent(item._id)}
                   sx={{ height: 'fit-content' }}
                 >
-                  Katıl
+                  Join
                 </Button>
               </Box>
 
@@ -133,7 +133,7 @@ const EventList = ({ refresh, setRefresh , date,setDate, searchkey }) => {
             ))
           ) : (
             <Typography variant="body2" color="textSecondary">
-              Henüz etkinlik bulunmamaktadır.
+              There are no events yet.
             </Typography>
           )}
         </Box>

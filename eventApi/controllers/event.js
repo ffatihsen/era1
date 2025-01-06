@@ -25,6 +25,29 @@ const getEventById = async (req, res, next) => {
     }
 };
 
+const getJoinedEvent = async (req, res, next) => {
+    try {
+        const { userId } = req.user;
+
+        const events = await eventLogic.joinedParticipantLogic(userId);
+
+        res.status(200).json(events);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getCreatedEvent = async (req, res, next) => {
+    try {
+        const { userId } = req.user;
+
+        const events = await eventLogic.createdParticipantLogic(userId);
+
+        res.status(200).json(events);
+    } catch (error) {
+        next(error);
+    }
+};
 
 
 const createEvent = async (req, res, next) => {
@@ -56,6 +79,20 @@ const addParticipant = async (req, res, next) => {
 
         const event = await eventLogic.addParticipantLogic(eventId, { userId, userName });
         res.status(200).json({ message: 'User successfully joined the event.', event });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+const removeParticipant = async (req, res, next) => {
+    try {
+        const { eventId } = req.params;
+        const { userId } = req.user;
+
+        const event = await eventLogic.removeParticipantLogic(eventId,  userId );
+        res.status(200).json({ message: 'User successfully removed the event.', event });
     } catch (error) {
         next(error);
     }
@@ -117,4 +154,7 @@ module.exports = {
     addParticipant,
     addComment,
     getEventById,
+    removeParticipant,
+    getJoinedEvent,
+    getCreatedEvent,
 };

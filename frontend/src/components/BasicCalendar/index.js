@@ -8,12 +8,14 @@ export default function BasicDateCalendar({ date, setDate }) {
 
   const handleDateChange = (selectedDate) => {
     const formattedDate = dayjs(selectedDate).format('YYYY-MM-DD');
-    setDate(formattedDate); 
+    setDate(formattedDate);
   };
+
+  const defaultDate = date ? dayjs(date) : dayjs();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar onChange={handleDateChange} value={dayjs(date)} />
+      <DateCalendar onChange={handleDateChange} value={defaultDate} />
     </LocalizationProvider>
   );
 }

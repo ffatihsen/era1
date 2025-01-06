@@ -5,7 +5,7 @@ import Toastbox from '../Toastbox';
 const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) => {
   const [newComment, setNewComment] = useState('');
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false); // Yüklenme durumu
+  const [loading, setLoading] = useState(false);
   const commentsContainerRef = useRef(null);
 
   const handleAddComment = () => {
@@ -13,7 +13,7 @@ const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) =
       onAddComment(newComment);
       setNewComment('');
     } else {
-      Toastbox('error', 'Yorum boş olamaz.');
+      Toastbox('error', 'Comment cannot be empty.');
     }
   };
 
@@ -49,7 +49,7 @@ const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) =
 
   return (
     <Box sx={{ width: '100%', maxWidth: 600, padding: 3 }}>
-      <Typography variant="h6" gutterBottom>Yorumlar:</Typography>
+      <Typography variant="h6" gutterBottom>Comments:</Typography>
 
       <Box
         ref={commentsContainerRef}
@@ -74,7 +74,7 @@ const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) =
           ))
         ) : (
           <Typography variant="body2" color="textSecondary">
-            Henüz yorum yapılmamış.
+            There are no comments yet.
           </Typography>
         )}
 
@@ -86,15 +86,15 @@ const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) =
 
         {!hasMore && (
           <Typography variant="caption" color="textSecondary" sx={{ display: 'block', textAlign: 'center', marginTop: 2 }}>
-            Tüm yorumlar yüklendi.
+            All comments have been uploaded.
           </Typography>
         )}
       </Box>
 
-      <Typography variant="h6" gutterBottom>Yorum Ekle:</Typography>
+      <Typography variant="h6" gutterBottom>Add Comment:</Typography>
       <TextField
         fullWidth
-        label="Yeni Yorum"
+        label="New Comment"
         variant="outlined"
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
@@ -103,7 +103,7 @@ const CommentSection = ({ comments, onAddComment, loadMoreComments, hasMore }) =
         sx={{ marginBottom: 2 }}
       />
       <Button variant="contained" color="primary" onClick={handleAddComment} fullWidth>
-        Yorum Yap
+      Leave a Comment
       </Button>
     </Box>
   );

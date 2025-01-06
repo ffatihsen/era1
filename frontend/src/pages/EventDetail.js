@@ -11,8 +11,8 @@ const EventDetail = () => {
   const [event, setEvent] = useState(null);
   const [comments, setComments] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
-  const [page, setPage] = useState(1); // Sayfalama için state
-  const [isLoading, setIsLoading] = useState(false); // Yükleme durumu
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const token = localStorage.getItem('token');
@@ -28,7 +28,7 @@ const EventDetail = () => {
         if (isScroll) setIsLoading(false);
       }
     } catch (error) {
-      Toastbox('error', 'Etkinlik detayları yüklenirken bir hata oluştu.');
+      Toastbox('error', 'An error occurred while loading event details.');
       if (isScroll) setIsLoading(false);
     }
   };
@@ -56,7 +56,12 @@ const EventDetail = () => {
       const res = await postJoinEvent(token, eventId);
       if (res.status === 200) {
         setIsJoined(true);
-        Toastbox('success', 'Etkinliğe katıldınız!');
+        Toastbox('success', 'You have joined the event!');
+        
+        setEvent((prevEvent) => ({
+          ...prevEvent,
+          attendeeCount: prevEvent.attendeeCount + 1
+        }));
       }
     } catch (error) {
       const message = error.response?.data?.error || 'An unexpected error occurred!';
@@ -67,17 +72,17 @@ const EventDetail = () => {
 
   const loadMoreComments = async (newPage) => {
     try {
-      const res = await getEventById(token, eventId, newPage); // Sayfayı güncelleyen API çağrısı
+      const res = await getEventById(token, eventId, newPage);
       if (res.status === 200) {
         if (res.data.comments.length === 0) {
-          setHasMore(false); // Eğer daha fazla yorum yoksa, hasMore'ı false yap
+          setHasMore(false);
         } else {
           setComments(prevComments => [...prevComments, ...res.data.comments]);
           setPage(newPage);
         }
       }
     } catch (error) {
-      Toastbox("error", "Yorumlar yüklenirken bir hata oluştu.");
+      Toastbox("error", "An error occurred while loading comments.");
     }
   };
 
@@ -108,18 +113,17 @@ const EventDetail = () => {
           <Paper sx={{ width: '100%', maxWidth: 600, padding: 3 }}>
             <Typography variant="h5" gutterBottom>{event.title}</Typography>
             <Typography variant="body1" paragraph>{event.description}</Typography>
-            <Typography variant="h6" paragraph>Katılımcılar: {event.attendeeCount}</Typography>
+            <Typography variant="h6" paragraph>Participants: {event.attendeeCount}</Typography>
             <Button
               variant="contained"
               color={isJoined ? 'secondary' : 'primary'}
               onClick={handleJoinEvent}
               fullWidth
             >
-              {isJoined ? 'Katıldınız' : 'Katıl'}
+              {isJoined ? 'You have joined' : 'Join'}
             </Button>
           </Paper>
 
-          {/* Comment Section */}
           <CommentSection comments={comments} onAddComment={handleAddComment}  loadMoreComments={loadMoreComments}  hasMore={hasMore}  />
         </Box>
       )}

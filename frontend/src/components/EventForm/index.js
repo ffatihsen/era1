@@ -73,12 +73,12 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
     return (
         <div>
             <Typography variant="h6" sx={{ marginTop: 3, backgroundColor: 'rgba(151,202,209,.08)' }}>
-                Yeni Etkinlik Oluştur
+            Create New Event
             </Typography>
             <Box sx={{ marginTop: 2, backgroundColor: 'rgba(151,202,209,.08)' }}>
                 <TextField
                     fullWidth
-                    label="Başlık"
+                    label="Title"
                     variant="outlined"
                     name="title"
                     value={formData.title}
@@ -87,7 +87,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                 />
                 <TextField
                     fullWidth
-                    label="Açıklama"
+                    label="Explanation"
                     variant="outlined"
                     name="description"
                     value={formData.description}
@@ -96,7 +96,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                 />
                 <TextField
                     fullWidth
-                    label="Konum"
+                    label="Location"
                     variant="outlined"
                     name="location"
                     value={formData.location}
@@ -105,17 +105,17 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                 />
                 <TextField
                     fullWidth
-                    label="Organizatör"
+                    label="Organizer"
                     variant="outlined"
                     name="organizer"
                     value={formData.organizer}
                     onChange={handleInputChange}
                     sx={{ marginBottom: 2 }}
                 />
-                {/* Date input */}
+         
                 <TextField
                     fullWidth
-                    label="Tarih"
+                    label="Date"
                     variant="outlined"
                     type="date"
                     name="date"
@@ -139,7 +139,7 @@ const EventForm = ({ formData, setFormData , refresh , setRefresh }) => {
                     }}
                     onClick={handleCreateEvent}
                 >
-                    Etkinliği Oluştur
+                   Create Event
                 </Button>
             </Box>
         </div>
